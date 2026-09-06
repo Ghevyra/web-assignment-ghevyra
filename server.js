@@ -36,7 +36,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ 
     storage: storage,
-    limits: { fileSize: 5 * 1024 * 1024 }, // limit 5MB
+    limits: { fileSize: 5 * 1024 * 1024 },
     fileFilter: (req, file, cb) => {
         const allowedTypes = /jpeg|jpg|png|pdf|doc|docx|zip/;
         const extName = allowedTypes.test(path.extname(file.originalname).toLowerCase());
@@ -47,9 +47,14 @@ const upload = multer({
     }
 });
 
-// Helper Functions for JSON DB
-const USERS_FILE = path.join(__dirname, 'data', 'users.json');
-const ASSIGNMENTS_FILE = path.join(__dirname, 'data', 'assignments.json');
+// Helper Functions for JSON DB with Auto-Directory Creation
+const DATA_DIR = path.join(__dirname, 'data');
+if (!fs.existsSync(DATA_DIR)) {
+    fs.mkdirSync(DATA_DIR, { recursive: true });
+}
+
+const USERS_FILE = path.join(DATA_DIR, 'users.json');
+const ASSIGNMENTS_FILE = path.join(DATA_DIR, 'assignments.json');
 
 function readData(filePath) {
     if (!fs.existsSync(filePath)) return [];
@@ -73,7 +78,7 @@ function isAuthenticated(req, res, next) {
     res.status(401).json({ success: false, message: 'Unauthorized. Silakan login terlebih dahulu.' });
 }
 
-// Routes - Views
+// Routes - Views (Semua mengarah ke folder 'views')
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
@@ -87,7 +92,7 @@ app.get('/dashboard', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'dashboard.html'));
 });
 app.get('/add-assignment', (req, res) => {
-    res.sendFile(__dirname + '/public/add-assignment.html'); // Sesuaikan dengan letak file HTML form tambah tugasmu
+    res.sendFile(path.join(__dirname, 'views', 'add-assignment.html')); // DIPERBAIKI: diarahkan ke folder views
 });
 app.get('/edit-assignment', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'edit-assignment.html'));
