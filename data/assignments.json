@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "userId": 1,
+    "title": "Implementasi ERD & PDM Sistem Informasi Ritel",
+    "course": "Pemrograman Database",
+    "deadline": "2026-06-15",
+    "status": "Belum Selesai",
+    "description": "Membuat perancangan basis data menggunakan Barker Notation dan Draw.io.",
+    "filename": ""
+  },
+  {
+    "id": 3,
+    "userId": 1,
+    "title": "n",
+    "course": "n",
+    "deadline": "2026-09-24",
+    "status": "Selesai",
+    "description": "m",
+    "filename": "1788613618085-605342820.pdf"
+  },
+  {
+    "id": 4,
+    "userId": 1,
+    "title": "p",
+    "course": "p",
+    "deadline": "2027-02-10",
+    "status": "Proses",
+    "description": "",
+    "filename": "1788619871963-747074925.pdf"
+  }
+]

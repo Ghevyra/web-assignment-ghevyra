@@ -1,0 +1,267 @@
+:root {
+    --bg-cream: #fbf5e9;         /* Background utama warna krem kertas */
+    --card-white: #ffffff;
+    --border-dark: #1e1e1e;      /* Garis hitam tegas khas neo-brutalism */
+    --shadow-hard: 4px 4px 0px #1e1e1e; /* Efek bayangan kotak keras */
+    --shadow-sm: 2px 2px 0px #1e1e1e;
+    --accent-cyan: #70d6ff;      /* Warna tombol/header cerah */
+    --accent-yellow: #ffd166;
+    --accent-pink: #ff8fab;
+    --accent-green: #06d6a0;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--bg-cream);
+    color: var(--border-dark);
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+/* Navbar dengan garis tegas & hard shadow */
+navbar {
+    background: var(--card-white);
+    border-bottom: 3px solid var(--border-dark);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-brand {
+    font-weight: 800;
+    font-size: 1.25rem;
+    color: var(--border-dark);
+    text-decoration: none;
+}
+
+/* Card ala Neo-Brutalism (Kotak tegas dengan bayangan hitam pekat) */
+.card {
+    background: var(--card-white);
+    border: 3px solid var(--border-dark);
+    border-radius: 8px;
+    padding: 2rem;
+    box-shadow: var(--shadow-hard);
+}
+
+.auth-container {
+    max-width: 420px;
+    margin: 4rem auto;
+}
+
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--border-dark);
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 3px solid var(--border-dark);
+    border-radius: 6px;
+    font-size: 1rem;
+    outline: none;
+    background-color: var(--card-white);
+    box-shadow: var(--shadow-sm);
+    transition: all 0.1s ease;
+}
+
+.form-control:focus {
+    background-color: #fff0f5; /* Sentuhan soft pink saat diketik */
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0px var(--border-dark);
+}
+
+/* Tombol Khas Neo-Brutalism (Bisa ditekan ke bawah saat hover/klik) */
+.btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    border: 3px solid var(--border-dark);
+    text-decoration: none;
+    text-align: center;
+    box-shadow: var(--shadow-hard);
+    transition: all 0.1s ease;
+}
+
+.btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0px var(--border-dark);
+}
+
+.btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px var(--border-dark);
+}
+
+.btn-primary {
+    background: var(--accent-cyan);
+    color: var(--border-dark);
+}
+
+.btn-secondary {
+    background: var(--accent-yellow);
+    color: var(--border-dark);
+}
+
+.btn-danger {
+    background: var(--accent-pink);
+    color: var(--border-dark);
+}
+
+.btn-block {
+    width: 100%;
+}
+
+/* Tabel dengan Garis Tegas */
+.table-responsive {
+    overflow-x: auto;
+    margin-top: 1.5rem;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card-white);
+    border: 3px solid var(--border-dark);
+    box-shadow: var(--shadow-hard);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+th, td {
+    padding: 1rem 1.25rem;
+    text-align: left;
+    border-bottom: 3px solid var(--border-dark);
+    border-right: 2px solid var(--border-dark);
+    font-size: 0.95rem;
+}
+
+th {
+    background: var(--accent-yellow);
+    color: var(--border-dark);
+    font-weight: 800;
+}
+
+tr:hover {
+    background-color: #fef9ef;
+}
+
+/* Badge Status */
+.badge {
+    padding: 0.35rem 0.85rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    border: 2px solid var(--border-dark);
+}
+
+.badge-warning { background: var(--accent-yellow); color: var(--border-dark); }
+.badge-success { background: var(--accent-green); color: var(--border-dark); }
+.badge-info { background: var(--accent-cyan); color: var(--border-dark); }
+
+/* Alert Box */
+.alert {
+    padding: 0.85rem 1rem;
+    border: 3px solid var(--border-dark);
+    border-radius: 6px;
+    margin-bottom: 1.25rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+    box-shadow: var(--shadow-sm);
+}
+
+.alert-success { background: var(--accent-green); color: var(--border-dark); }
+.alert-danger { background: var(--accent-pink); color: var(--border-dark); }
+
+.hidden { display: none !important; }
+
+.dashboard-header {
+    display: pers;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+/* Animasi foto profil masuk dari besar ke ukuran normal dengan efek 3D pop */
+@keyframes profileZoomIn {
+    0% {
+        transform: scale(2.5) translateY(50px) rotate(-10deg);
+        opacity: 0;
+        filter: blur(10px);
+    }
+    60% {
+        transform: scale(0.9) translateY(-10px) rotate(5deg);
+        opacity: 1;
+        filter: blur(0px);
+    }
+    100% {
+        transform: scale(1) translateY(0) rotate(0deg);
+        opacity: 1;
+    }
+}
+
+/* Animasi melayang 3D terus-menerus untuk seluruh kartu login */
+@keyframes floatCard {
+    0% {
+        transform: translateY(0px) rotate(0deg);
+        box-shadow: 4px 4px 0px #1e1e1e;
+    }
+    50% {
+        transform: translateY(-6px) rotate(0.5deg);
+        box-shadow: 8px 10px 0px #1e1e1e;
+    }
+    100% {
+        transform: translateY(0px) rotate(0deg);
+        box-shadow: 4px 4px 0px #1e1e1e;
+    }
+}
+
+/* Terapkan efek melayang 3D pada card auth */
+.auth-container {
+    max-width: 420px;
+    margin: 3rem auto;
+    animation: floatCard 4s ease-in-out infinite;
+    transition: all 0.3s ease;
+}
+
+/* Efek interaktif 3D saat form input diklik/fokus */
+.form-control {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 3px solid #1e1e1e;
+    border-radius: 6px;
+    font-size: 1rem;
+    outline: none;
+    background-color: #ffffff;
+    box-shadow: 2px 2px 0px #1e1e1e;
+    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.form-control:focus {
+    background-color: #fff0f5;
+    transform: translate(-3px, -3px);
+    box-shadow: 5px 5px 0px #1e1e1e;
+}

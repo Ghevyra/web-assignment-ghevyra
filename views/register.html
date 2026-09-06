@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Manajemen Tugas</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="card auth-container">
+            <h2 style="margin-bottom: 1.5rem; text-align: center;">Daftar Akun Baru</h2>
+            <div id="alertBox" class="alert hidden"></div>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" class="form-control" required placeholder="Buat username">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" class="form-control" required placeholder="Buat password">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Register</button>
+            </form>
+            <p style="text-align: center; margin-top: 1.5rem; font-size: 0.9rem;">
+                Sudah punya akun? <a href="/login" style="color: var(--primary); text-decoration: none; font-weight: 600;">Login di sini</a>
+            </p>
+        </div>
+    </div>
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const alertBox = document.getElementById('alertBox');
+            alertBox.classList.add('hidden');
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const res = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alertBox.className = 'alert alert-success';
+                    alertBox.textContent = data.message;
+                    alertBox.classList.remove('hidden');
+                    setTimeout(() => { window.location.href = '/login'; }, 1500);
+                } else {
+                    alertBox.className = 'alert alert-danger';
+                    alertBox.textContent = data.message;
+                    alertBox.classList.remove('hidden');
+                }
+            } catch (err) {
+                alertBox.className = 'alert alert-danger';
+                alertBox.textContent = 'Terjadi kesalahan pada server.';
+                alertBox.classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

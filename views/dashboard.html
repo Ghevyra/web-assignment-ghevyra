@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Ghevyra.Archive</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <navbar>
+        <a href="/dashboard" class="nav-brand">Ghevyra.Archive</a>
+        <div class="nav-links" style="display: flex; align-items: center; gap: 1rem;">
+            <span id="userWelcome" style="font-weight: 600; color: var(--border-dark);"></span>
+            <button id="logoutBtn" class="btn btn-danger" style="padding: 0.4rem 1rem; font-size: 0.85rem;">Logout</button>
+        </div>
+    </navbar>
+
+    <div class="container">
+        <!-- Header dengan Judul di Kiri, Search & Tombol Tambah di Kanan -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+            <div>
+                <h1 style="font-weight: 800; font-size: 1.8rem;">Dashboard Tugas Akademik ⋆。</h1>
+                <p style="color: #555; margin-top: 0.2rem;">Catat tugas, atur waktu, selesai tepat waktu ⏱️</p>
+            </div>
+            
+            <!-- Bagian Search & Tombol Tambah -->
+            <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+                <div style="position: relative; display: flex; align-items: center;">
+                    <span style="position: absolute; left: 12px; font-size: 1rem;">🔍</span>
+                    <input type="text" id="searchInput" placeholder="Cari tugas mata kuliah....." oninput="filterAssignments()" style="padding: 0.5rem 0.75rem 0.5rem 2.2rem; border: 2px solid var(--border-dark, #000); border-radius: 6px; font-weight: 500; outline: none; background: #fff; box-shadow: 2px 2px 0px var(--border-dark, #000);">
+                </div>
+                <a href="/add-assignment" class="btn btn-primary">+ Tambah Tugas Baru</a>
+            </div>
+        </div>
+
+        <div class="card" style="padding: 1.5rem;">
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Judul Tugas</th>
+                            <th>Mata Kuliah</th>
+                            <th>Deadline</th>
+                            <th>Status</th>
+                            <th>File</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="assignmentTableBody">
+                        <tr>
+                            <td colspan="7" style="text-align: center; color: #666;">Memuat data...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allAssignments = []; // Menyimpan data asli untuk pencarian
+
+        async function checkAuth() {
+            try {
+                const res = await fetch('/api/check-session');
+                const data = await res.json();
+                if (!data.loggedIn) {
+                    window.location.href = '/login';
+                } else {
+                    document.getElementById('userWelcome').textContent = 'Halo, ' + data.user.username;
+                    loadAssignments();
+                }
+            } catch (err) {
+                window.location.href = '/login';
+            }
+        }
+
+        async function loadAssignments() {
+            try {
+                const res = await fetch('/api/assignments');
+                const result = await res.json();
+                
+                if (result.success) {
+                    allAssignments = result.data;
+                    renderTable(allAssignments);
+                } else {
+                    document.getElementById('assignmentTableBody').innerHTML = '<tr><td colspan="7" style="text-align: center; color: #666;">Belum ada tugas tercatat.</td></tr>';
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function renderTable(dataList) {
+            const tbody = document.getElementById('assignmentTableBody');
+            tbody.innerHTML = '';
+
+            if (dataList.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #666;">Tidak ada tugas yang cocok dengan pencarian.</td></tr>';
+                return;
+            }
+
+            dataList.forEach((item, index) => {
+                const isDone = item.status === 'Selesai' || item.status === 'Done';
+                const badgeClass = isDone ? 'badge-success' : 'badge-warning';
+                const statusText = isDone ? 'Done' : 'In Progress';
+                
+                const fileLink = item.filename ? `<a href="/uploads/${item.filename}" target="_blank" style="color: var(--border-dark); font-weight: 700; text-decoration: underline;">Unduh</a>` : '<span style="color: #999;">-</span>';
+                
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td style="font-weight: 700;">${item.title}</td>
+                    <td>${item.course}</td>
+                    <td>${item.deadline}</td>
+                    <td><span class="badge ${badgeClass}">${statusText}</span></td>
+                    <td>${fileLink}</td>
+                    <td>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <a href="/edit-assignment?id=${item.id}" class="btn btn-secondary" style="padding: 0.3rem 0.75rem; font-size: 0.8rem;">Edit</a>
+                            <button onclick="deleteAssignment(${item.id})" class="btn btn-danger" style="padding: 0.3rem 0.75rem; font-size: 0.8rem;">Hapus</button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Fungsi untuk memfilter data berdasarkan input pencarian
+        function filterAssignments() {
+            const keyword = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = allAssignments.filter(item => 
+                item.title.toLowerCase().includes(keyword) || 
+                item.course.toLowerCase().includes(keyword)
+            );
+            renderTable(filtered);
+        }
+
+        async function deleteAssignment(id) {
+            if (!confirm('Apakah kamu yakin ingin menghapus tugas ini?')) return;
+            try {
+                const res = await fetch(`/api/assignments/${id}`, { method: 'DELETE' });
+                const result = await res.json();
+                if (result.success) {
+                    loadAssignments();
+                } else {
+                    alert(result.message);
+                }
+            } catch (err) {
+                alert('Gagal menghapus tugas.');
+            }
+        }
+
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            const res = await fetch('/api/logout', { method: 'POST' });
+            const data = await res.json();
+            if (data.success) {
+                window.location.href = '/login';
+            }
+        });
+
+        checkAuth();
+    </script>
+</body>
+</html>

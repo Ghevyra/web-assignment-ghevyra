@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Tugas - Manajemen Tugas</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <navbar>
+        <a href="/dashboard" class="nav-brand">ManajemenTugas.web</a>
+        <div class="nav-links">
+            <a href="/dashboard">Kembali ke Dashboard</a>
+        </div>
+    </navbar>
+
+    <div class="container" style="max-width: 700px;">
+        <div class="card">
+            <h2 style="margin-bottom: 1.5rem;">Edit Tugas Kuliah</h2>
+            <div id="alertBox" class="alert hidden"></div>
+            <form id="editForm" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="title">Judul Tugas</label>
+                    <input type="text" id="title" name="title" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="course">Mata Kuliah</label>
+                    <input type="text" id="course" name="course" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="deadline">Deadline</label>
+                    <input type="date" id="deadline" name="deadline" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="status">Status</label>
+                    <select id="status" name="status" class="form-control">
+                        <option value="Belum Selesai">Belum Selesai</option>
+                        <option value="Proses">Proses</option>
+                        <option value="Selesai">Selesai</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="description">Deskripsi / Catatan</label>
+                    <textarea id="description" name="description" class="form-control" rows="4"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="file">Ganti Lampiran File (Opsional)</label>
+                    <input type="file" id="file" name="file" class="form-control">
+                    <small id="currentFile" style="color: var(--text-muted); display: block; margin-top: 0.5rem;"></small>
+                </div>
+                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">Perbarui Tugas</button>
+                    <a href="/dashboard" class="btn btn-secondary" style="flex: 1; text-align: center;">Batal</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const assignmentId = urlParams.get('id');
+
+        if (!assignmentId) {
+            window.location.href = '/dashboard';
+        }
+
+        async function fetchAssignmentDetail() {
+            try {
+                const res = await fetch(`/api/assignments/${assignmentId}`);
+                const result = await res.json();
+                if (result.success) {
+                    const data = result.data;
+                    document.getElementById('title').value = data.title;
+                    document.getElementById('course').value = data.course;
+                    document.getElementById('deadline').value = data.deadline;
+                    document.getElementById('status').value = data.status;
+                    document.getElementById('description').value = data.description || '';
+                    if (data.filename) {
+                        document.getElementById('currentFile').innerHTML = `File saat ini: <a href="/uploads/${data.filename}" target="_blank" style="color: var(--primary);">Unduh File</a>`;
+                    } else {
+                        document.getElementById('currentFile').textContent = 'Tidak ada file terlampir.';
+                    }
+                } else {
+                    alert(result.message);
+                    window.location.href = '/dashboard';
+                }
+            } catch (err) {
+                alert('Gagal mengambil data tugas.');
+            }
+        }
+
+        document.getElementById('editForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const alertBox = document.getElementById('alertBox');
+            alertBox.classList.add('hidden');
+
+            const formData = new FormData(e.target);
+
+            try {
+                const res = await fetch(`/api/assignments/${assignmentId}`, {
+                    method: 'PUT',
+                    body: formData
+                });
+                const result = await res.json();
+                if (result.success) {
+                    alertBox.className = 'alert alert-success';
+                    alertBox.textContent = result.message;
+                    alertBox.classList.remove('hidden');
+                    setTimeout(() => { window.location.href = '/dashboard'; }, 1200);
+                } else {
+                    alertBox.className = 'alert alert-danger';
+                    alertBox.textContent = result.message;
+                    alertBox.classList.remove('hidden');
+                }
+            } catch (err) {
+                alertBox.className = 'alert alert-danger';
+                alertBox.textContent = 'Terjadi kesalahan pada server.';
+                alertBox.classList.remove('hidden');
+            }
+        });
+
+        fetchAssignmentDetail();
+    </script>
+</body>
+</html>
