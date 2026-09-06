@@ -86,8 +86,8 @@ app.get('/register', (req, res) => {
 app.get('/dashboard', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'dashboard.html'));
 });
-app.get('/tambah-tugas', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'add-assignment.html'));
+app.get('/add-assignment', (req, res) => {
+    res.sendFile(__dirname + '/public/add-assignment.html'); // Sesuaikan dengan letak file HTML form tambah tugasmu
 });
 app.get('/edit-assignment', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'edit-assignment.html'));
